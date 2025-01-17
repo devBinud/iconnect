@@ -17,27 +17,27 @@ const Sidebar = () => {
           
           <li class="nav-item">
             <Link class="nav-link" to="/add-product">
-              <i class="icon-grid menu-icon"></i>
+              <i class="icon-box menu-icon"></i>
               
               <span class="menu-title">Add New Product</span>
             </Link>
           </li>
           <li class="nav-item">
             <Link class="nav-link" to="/all-products">
-              <i class="icon-grid menu-icon"></i>
+              <i class="icon-folder menu-icon"></i>
               <span class="menu-title">View All Products</span>
             </Link>
           </li>
         
           <li class="nav-item">
             <Link class="nav-link" to="/add-category">
-              <i class="icon-grid menu-icon"></i>
+              <i class="icon-box menu-icon"></i>
               <span class="menu-title">Add New Stocks</span>
             </Link>
           </li>
           <li class="nav-item">
             <Link class="nav-link" to="/all-categories">
-              <i class="icon-grid menu-icon"></i>
+              <i class="icon-folder menu-icon"></i>
               <span class="menu-title">View All Stocks</span>
             </Link>
           </li>
@@ -50,29 +50,29 @@ const Sidebar = () => {
               aria-expanded="false"
               aria-controls="ui-basic"
             >
-              <i class="icon-layout menu-icon"></i>
+              <i class="icon-speech-bubble menu-icon"></i>
               <span class="menu-title">Testimonials</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="customerReview">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item">
-                  <Link class="nav-link" to="/">
+                  <Link class="nav-link" to="#!">
                     Add Review
                   </Link>
                 </li>
                 <li class="nav-item">
-                  <Link class="nav-link" to="/">
+                  <Link class="nav-link" to="#!">
                     View All Reviews
                   </Link>
                 </li>
                 <li class="nav-item">
-                  <Link class="nav-link" to="/">
+                  <Link class="nav-link" to="#!">
                     Published Reviews
                   </Link>
                 </li>
                 <li class="nav-item">
-                  <Link class="nav-link" to="/">
+                  <Link class="nav-link" to="#!">
                     Pending Reviews
                   </Link>
                 </li>
@@ -81,14 +81,14 @@ const Sidebar = () => {
           </li>
 
           <li class="nav-item">
-            <Link class="nav-link" to="/stock-updates">
-              <i class="icon-grid menu-icon"></i>
+            <Link class="nav-link" to="#!">
+              <i class="icon-map menu-icon"></i>
               <span class="menu-title">Sales Report</span>
             </Link>
           </li>
           <li class="nav-item">
-            <Link class="nav-link" to="/stock-updates">
-              <i class="icon-grid menu-icon"></i>
+            <Link class="nav-link" to="#!">
+              <i class="icon-repeat menu-icon"></i>
               <span class="menu-title">Inventory Updates</span>
             </Link>
           </li>

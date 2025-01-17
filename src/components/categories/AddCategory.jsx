@@ -52,9 +52,9 @@ const AddCategory = () => {
             <div class="col-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Add New Category</h4>
+                  <h4 class="card-title">Add New Stocks</h4>
                   <p class="card-description">
-                    Add only categories ,
+                    Add only Stocks ,
                     <span className="text-danger"> Slug</span> will be generated
                     automatically
                   </p>
@@ -66,7 +66,7 @@ const AddCategory = () => {
                             className="card-description"
                             style={{ margin: "4px 1px" }}
                           >
-                            Category Name <span className="text-danger">*</span>
+                            Stock Name <span className="text-danger">*</span>
                           </p>
                           <input
                             type="text"
@@ -98,7 +98,7 @@ const AddCategory = () => {
                             className="card-description"
                             style={{ margin: "4px 1px" }}
                           >
-                            Sub Category Name <span className="text-danger">*</span>
+                            Sub Stock Name <span className="text-danger">*</span>
                           </p>
                           <input
                             type="text"

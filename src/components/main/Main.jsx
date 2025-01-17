@@ -1,6 +1,6 @@
 import React from 'react';
 import Footer from '../footer/Footer';
-import dash__img from "../../assets/background/dashboard_bg.jpg";
+import dash__img from "../../assets/background/2.jpg";
 
 const Main = () => {
   return (
@@ -29,7 +29,6 @@ const Main = () => {
           </div>
           <div className="row align-items-center">
             <div className="col-md-6 grid-margin stretch-card">
-              <div className="card">
                 <div className="card-people mt-auto">
                   <img
                     src={dash__img}
@@ -37,12 +36,11 @@ const Main = () => {
                     alt="dashboard-background"
                   />
                 </div>
-              </div>
             </div>
             <div className="col-md-6 grid-margin transparent">
               <div className="row">
                 <div className="col-md-6 mb-4 stretch-card transparent">
-                  <div className="card card-tale">
+                  <div className="card card-light-danger">
                     <div className="card-body">
                       <p className="mb-4">Total Phone Companies</p>
                       <p className="fs-30 mb-2">30</p>
@@ -51,7 +49,7 @@ const Main = () => {
                   </div>
                 </div>
                 <div className="col-md-6 mb-4 stretch-card transparent">
-                  <div className="card card-dark-blue">
+                  <div className="card card-light-blue">
                     <div className="card-body">
                       <p className="mb-4">Total Products</p>
                       <p className="fs-30 mb-2">544</p>
@@ -80,7 +78,50 @@ const Main = () => {
                   </div>
                 </div>
               </div>
+
+              <div className="row mt-3">
+                <div className="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+                  <div className="card card-light-danger">
+                    <div className="card-body">
+                      <p className="mb-4">Todays Orders</p>
+                      <p className="fs-30 mb-2">120</p>
+                      <p>Last updated on today</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 stretch-card transparent">
+                  <div className="card card-light-blue">
+                    <div className="card-body">
+                      <p className="mb-4">Todays Sales</p>
+                      <p className="fs-30 mb-2">32</p>
+                      <p>Data as per recent calculation</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row mt-3">
+                <div className="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+                  <div className="card card-light-blue">
+                    <div className="card-body">
+                      <p className="mb-4">Todays Orders</p>
+                      <p className="fs-30 mb-2">120</p>
+                      <p>Last updated on today</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 stretch-card transparent">
+                  <div className="card card-light-danger">
+                    <div className="card-body">
+                      <p className="mb-4">Todays Sales</p>
+                      <p className="fs-30 mb-2">32</p>
+                      <p>Data as per recent calculation</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+            
           </div>
         </div>
         {/* content-wrapper ends */}

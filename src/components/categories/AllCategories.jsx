@@ -97,9 +97,9 @@ const handleCategoryNameChange = (e) => {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">View All Categories</h4>
+                  <h4 class="card-title">View All Stocks</h4>
                   <p class="card-description">
-                    List of all categories , you can edit or delete in
+                    List of all stocks , you can edit or delete in
                     <span className="text-danger"> Action Column</span>
                   </p>
                   <div class="table-responsive pt-3">
@@ -107,7 +107,7 @@ const handleCategoryNameChange = (e) => {
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Category Name</th>
+                          <th>Stocks Name</th>
                           <th>Slug</th>
                           <th>Action</th>
                         </tr>

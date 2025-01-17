@@ -71,7 +71,12 @@ const AddProducts = () => {
             <div className="col-md-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5">Add New Product</h4>
+                <div className="row align-items-center">
+  <div className="col-md-6">
+    <h4 className="card-title mb-5">Add New Product</h4>
+  </div>
+</div>
+
                   <form className="forms-sample" onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-md-4">
@@ -161,7 +166,7 @@ const AddProducts = () => {
                     </div>
 
                     <button type="submit" className="btn btn-primary mr-2">
-                      Publish Product
+                      Add Product
                     </button>
                     <button
                       type="button"
