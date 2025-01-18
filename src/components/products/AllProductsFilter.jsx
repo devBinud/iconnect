@@ -28,7 +28,7 @@ const AllProductsFilter = ({ onFilter }) => {
         </div>
 
         {/* Minimum Price Filter */}
-        <div className="col-md-2">
+        <div className="col-md-2 mt-lg-0 mt-2">
           <input
             type="number"
             className="form-control"
@@ -40,7 +40,7 @@ const AllProductsFilter = ({ onFilter }) => {
         </div>
 
         {/* Maximum Price Filter */}
-        <div className="col-md-2">
+        <div className="col-md-2 mt-lg-0 mt-2">
           <input
             type="number"
             className="form-control"
@@ -52,7 +52,7 @@ const AllProductsFilter = ({ onFilter }) => {
         </div>
 
         {/* Start Date Filter */}
-        <div className="col-md-2">
+        <div className="col-md-2 mt-lg-0 mt-2">
           <input
             type="date"
             className="form-control"
@@ -63,7 +63,7 @@ const AllProductsFilter = ({ onFilter }) => {
         </div>
 
         {/* End Date Filter */}
-        <div className="col-md-2">
+        <div className="col-md-2 mt-lg-0 mt-2">
           <input
             type="date"
             className="form-control"
@@ -74,7 +74,7 @@ const AllProductsFilter = ({ onFilter }) => {
         </div>
 
         {/* Apply Filter Button */}
-        <div className="col-md-1">
+        <div className="col-md-1 mt-lg-0 mt-2">
           <button onClick={handleFilter} type="button" class="btn btn-primary btn-icon-text">
                           Apply
                         </button>
