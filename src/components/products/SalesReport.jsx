@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import "jspdf-autotable";  // Import the autotable plugin
 import Footer from "../footer/Footer";
-import { getDatabase, ref, onValue, remove } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import AllProductsFilter from "./AllProductsFilter";
 
@@ -30,7 +30,7 @@ const formatDate = (timestamp) => {
   });
 };
 
-const AllProducts = () => {
+const SalesReport = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ const AllProducts = () => {
 
   const handleFilter = (filterCriteria) => {
     const { company, minPrice, maxPrice, search, startDate, endDate } = filterCriteria;
-
+    
     setLoading(true);
 
     const filtered = products.filter((product) => {
@@ -97,43 +97,39 @@ const AllProducts = () => {
     setLoading(false);
   };
 
-  const handleDelete = (productId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-    if (confirmDelete) {
-      const productRef = ref(database, `mobileProducts/${productId}`);
-      remove(productRef)
-        .then(() => {
-          alert("Product deleted successfully!");
-        })
-        .catch((error) => {
-          console.error("Error deleting product:", error);
-          alert("Failed to delete product. Please try again.");
-        });
-    }
-  };
-
   const exportAsPDF = () => {
     const doc = new jsPDF();
-
+  
+    // Title: i-#FF3131 and Connect#004aad (No gap between "i" and "Connect")
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(255, 49, 49);
-    doc.text("i", 14, 20);
-    doc.setTextColor(0, 74, 173);
-    const iWidth = doc.getTextWidth("i");
-    doc.text("Connect", 14 + iWidth, 20);
-
-    doc.setFontSize(10);
+    
+    // "i" in red color
+    doc.setTextColor(255, 49, 49); // Red color for "i"
+    doc.text("i", 14, 20); // Position "i" at x=14, y=20
+    
+    // "Connect" in blue color, no gap between "i" and "Connect"
+    doc.setTextColor(0, 74, 173); // Blue color for "Connect"
+    const iWidth = doc.getTextWidth("i"); // Get width of "i"
+    doc.text("Connect", 14 + iWidth, 20); // Position "Connect" immediately after "i"
+  
+    // Subtitle: "Your trusted source for iPhone"
+    doc.setFontSize(10); // Smaller font size for the subtitle
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(169, 169, 169);
-    doc.text("Your trusted source for iPhone", 14, 30);
-
+    doc.setTextColor(169, 169, 169); // Light gray color for the subtitle
+    doc.text("Your trusted source for iPhone", 14, 30); // No gap between iConnect and subtitle
+  
+    // Address: iConnect, BK Kakoty Road, etc.
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal"); // Set to normal font for address
     doc.text("BK Kakoty Road, Near Ulubari Bridge", 14, 45);
     doc.text("Guwahati, Assam", 14, 50);
-    doc.text("PIN - 781007", 14, 55);
-
-    let yPosition = 65;
-
+    doc.text("PIN - 781007", 14, 55); // PIN is not bold anymore
+  
+    // Add some space before the table
+    let yPosition = 65; // Position for the table to start
+  
+    // Define the columns for the table
     const columns = [
       { title: "#", dataKey: "index" },
       { title: "Product Name", dataKey: "name" },
@@ -141,9 +137,10 @@ const AllProducts = () => {
       { title: "Regular Price", dataKey: "regularPrice" },
       { title: "Sale Price", dataKey: "salePrice" },
       { title: "Entry Date", dataKey: "entryDate" },
-      { title: "Sale Status", dataKey: "status" },
+      { title: "Sale Status", dataKey: "status" }
     ];
-
+  
+    // Prepare the rows with the product data
     const rows = filteredProducts.map((product, index) => ({
       index: index + 1,
       name: product.name,
@@ -151,35 +148,40 @@ const AllProducts = () => {
       regularPrice: `$${product.regularPrice}`,
       salePrice: `$${product.salePrice}`,
       entryDate: formatDate(product.timestamp),
-      status: product.status,
+      status: product.status
     }));
-
+  
+    // Set the font for the table content (normal font)
     doc.setFont("helvetica", "normal");
+  
+    // Add the table to the PDF with styling
     doc.autoTable(columns, rows, {
-      startY: yPosition,
+      startY: yPosition, // Start the table below the title and address
       styles: {
-        fontSize: 10,
-        cellPadding: 5,
-        halign: "center",
-        valign: "middle",
-        lineColor: [221, 221, 221],
-        lineWidth: 0.5,
-        textColor: [64, 60, 69],
+        fontSize: 10, // Font size for table content
+        cellPadding: 5, // Padding inside the cells
+        halign: "center", // Horizontal alignment of text in cells
+        valign: "middle", // Vertical alignment of text in cells
+        lineColor: [221, 221, 221], // Border color for the table (light gray #ddd)
+        lineWidth: 0.5, // Border width
+        textColor: [64, 60, 69], // Dark gray text color for table data
       },
       headStyles: {
-        fillColor: [0, 74, 173],
-        textColor: [255, 255, 255],
-        fontStyle: "bold",
+        fillColor: [0, 74, 173], // Dark blue color for the table header (#004aad)
+        textColor: [255, 255, 255], // White text color in the header
+        fontStyle: "bold", // Make header text bold
       },
       bodyStyles: {
-        fillColor: [255, 255, 250],
+        fillColor: [255, 255, 250], // Light gray color for table rows
       },
-      theme: "grid",
+      theme: "grid", // Use grid lines for the table
     });
-
+  
+    // Save the PDF
     doc.save("products.pdf");
   };
-
+  
+  
   return (
     <>
       <div className="main-panel">
@@ -188,7 +190,7 @@ const AllProducts = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5">All Products</h4>
+                  <h4 className="card-title mb-5">Sales Report</h4>
 
                   <AllProductsFilter onFilter={handleFilter} />
 
@@ -205,7 +207,7 @@ const AllProducts = () => {
                             <th>Regular Price</th>
                             <th>Sale Price</th>
                             <th>Entry Date</th>
-                            <th>Action</th>
+                            <th>Sale Status</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -217,16 +219,15 @@ const AllProducts = () => {
                                 <td>{product.company}</td>
                                 <td>₹{product.regularPrice}</td>
                                 <td>₹{product.salePrice}</td>
-                                <td>{product.timestamp ? formatDate(product.timestamp) : "Not available"}</td>
+                                <td>{product.timestamp ? formatDate(product.timestamp) : 'Not available'}</td>
+
                                 <td>
-                                  <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={() => handleDelete(product.id)}
-                                  >
-                                    Delete
-                                  </button>
-                                </td>
+  <button type="button" className={`btn ${product.status ? 'btn-danger' : 'btn-success'}`}>
+    {product.status || 'Mark As Sold'}
+  </button>
+</td>
+
+
                               </tr>
                             ))
                           ) : (
@@ -240,15 +241,11 @@ const AllProducts = () => {
                       </table>
                     </div>
                   )}
-
-                  <button
-                    onClick={exportAsPDF}
-                    type="button"
-                    className="btn btn-info btn-icon-text mt-3"
-                  >
-                    Export as PDF
-                    <i className="ti-printer btn-icon-append"></i>
-                  </button>
+                  
+                  <button onClick={exportAsPDF} type="button" class="btn btn-info btn-icon-text mt-3">
+                  Export as PDF
+                          <i class="ti-printer btn-icon-append"></i>                                                                              
+                        </button>
                 </div>
               </div>
             </div>
@@ -260,4 +257,4 @@ const AllProducts = () => {
   );
 };
 
-export default AllProducts;
+export default SalesReport;

@@ -19,77 +19,41 @@ const Sidebar = () => {
             <Link class="nav-link" to="/add-product">
               <i class="icon-box menu-icon"></i>
               
-              <span class="menu-title">Add New Product</span>
+              <span class="menu-title">Add Product</span>
             </Link>
           </li>
           <li class="nav-item">
             <Link class="nav-link" to="/all-products">
               <i class="icon-folder menu-icon"></i>
-              <span class="menu-title">View All Products</span>
+              <span class="menu-title">All Products</span>
             </Link>
           </li>
         
           <li class="nav-item">
             <Link class="nav-link" to="/add-category">
               <i class="icon-box menu-icon"></i>
-              <span class="menu-title">Add New Stocks</span>
+              <span class="menu-title">Sell Now</span>
             </Link>
           </li>
-          <li class="nav-item">
-            <Link class="nav-link" to="/all-categories">
-              <i class="icon-folder menu-icon"></i>
-              <span class="menu-title">View All Stocks</span>
-            </Link>
-          </li>
+      
 
           <li class="nav-item">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#customerReview"
-              aria-expanded="false"
-              aria-controls="ui-basic"
-            >
-              <i class="icon-speech-bubble menu-icon"></i>
-              <span class="menu-title">Testimonials</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="customerReview">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <Link class="nav-link" to="#!">
-                    Add Review
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to="#!">
-                    View All Reviews
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to="#!">
-                    Published Reviews
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to="#!">
-                    Pending Reviews
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </li>
-
-          <li class="nav-item">
-            <Link class="nav-link" to="#!">
+            <Link class="nav-link" to="/sales-report">
               <i class="icon-map menu-icon"></i>
               <span class="menu-title">Sales Report</span>
             </Link>
           </li>
           <li class="nav-item">
-            <Link class="nav-link" to="#!">
-              <i class="icon-repeat menu-icon"></i>
-              <span class="menu-title">Inventory Updates</span>
+            <Link class="nav-link" to="/bill-generate">
+              <i class="icon-folder menu-icon"></i>
+              <span class="menu-title">Bill Generate</span>
+            </Link>
+          </li>
+
+          <li class="nav-item">
+            <Link class="nav-link" to="/quick-sale">
+              <i class="icon-book menu-icon"></i>
+              <span class="menu-title">Product Sale</span>
             </Link>
           </li>
           

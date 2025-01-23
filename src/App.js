@@ -6,9 +6,11 @@ import AddCategory from "./pages/categoriesWrapper/AddCategoryWrapper"
 import AllCategories from "./pages/categoriesWrapper/AllCategoriesWrapper";
 import AddProducts from "./pages/productsWrapper/AddProductsWrapper";
 import AllProducts from "./pages/productsWrapper/AllProductsWrapper";
-import AddDiscounts from './pages/discountsWrapper/AddDiscountsWrapper';
-import AllDiscounts from "./pages/discountsWrapper/AllDiscountsWrapper";
-import StockUpdates from './pages/stockUpdatesWrapper/AllStockUpdatesWrapper';
+import SalesReport from './pages/productsWrapper/SalesReportWrapper';
+import BillGenerator from './pages/BillWrapper/BillGeneratorWrapper';
+import SellWrapper from './pages/BillWrapper/SellWrapper';
+import InvoicePage from './components/bill/invoice';
+
 
 const App = () => {
   return (
@@ -20,9 +22,10 @@ const App = () => {
         <Route path="/all-categories" element={<AllCategories />}></Route>
         <Route path="/add-product" element={<AddProducts />}></Route>
         <Route path="/all-products" element={<AllProducts />}></Route>
-        <Route path="/add-discounts" element={<AddDiscounts />}></Route>
-        <Route path="/all-discounts" element={<AllDiscounts />}></Route>
-        <Route path="/stock-updates" element={<StockUpdates />}></Route>
+        <Route path="/sales-report" element={<SalesReport />}></Route>
+        <Route path="/bill-generate" element={<BillGenerator />}></Route>
+        <Route path="/quick-sale" element={<SellWrapper />}></Route>
+        <Route path="/invoice/:id" element={<InvoicePage />} />
       </Routes>
     </>
   );

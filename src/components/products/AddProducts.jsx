@@ -5,11 +5,14 @@ import storeMobileProduct from '../../firebase';
 const AddProducts = () => {
   const [productDetails, setProductDetails] = useState({
     company: '',
-    name: '',
+    modelName: '',
+    sellerName: '',
+    sellerMobile: '',
+    imei: '',
     regularPrice: '',
-    discount: '',
     salePrice: '',
     active: 'yes', // Default value for active status
+    billboxAvailable: 'yes', // Default for billbox availability
   });
 
   // Handle input changes
@@ -18,19 +21,7 @@ const AddProducts = () => {
     setProductDetails((prevDetails) => ({
       ...prevDetails,
       [name]: type === 'checkbox' ? checked : value,
-      salePrice:
-        name === 'regularPrice' || name === 'discount'
-          ? calculateSalePrice(prevDetails.regularPrice, prevDetails.discount, name, value)
-          : prevDetails.salePrice,
     }));
-  };
-
-  // Calculate sale price
-  const calculateSalePrice = (regularPrice, discount, changedField, changedValue) => {
-    const updatedRegularPrice = changedField === 'regularPrice' ? parseFloat(changedValue) || 0 : parseFloat(regularPrice) || 0;
-    const updatedDiscount = changedField === 'discount' ? parseFloat(changedValue) || 0 : parseFloat(discount) || 0;
-
-    return updatedRegularPrice - (updatedRegularPrice * updatedDiscount) / 100;
   };
 
   // Handle form submission
@@ -38,7 +29,7 @@ const AddProducts = () => {
     e.preventDefault();
 
     // Validate inputs
-    if (!productDetails.company || !productDetails.name || !productDetails.regularPrice) {
+    if (!productDetails.company || !productDetails.modelName || !productDetails.regularPrice) {
       alert('Please fill in all required fields.');
       return;
     }
@@ -55,11 +46,14 @@ const AddProducts = () => {
     alert('Product added successfully!');
     setProductDetails({
       company: '',
-      name: '',
+      modelName: '',
+      sellerName: '',
+      sellerMobile: '',
+      imei: '',
       regularPrice: '',
-      discount: '',
       salePrice: '',
-      active: 'yes', // Reset active status to default
+      active: 'yes',
+      billboxAvailable: 'yes',
     });
   };
 
@@ -71,81 +65,106 @@ const AddProducts = () => {
             <div className="col-md-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                <div className="row align-items-center">
-  <div className="col-md-6">
-    <h4 className="card-title mb-5">Add New Product</h4>
-  </div>
-</div>
+                  <div className="row align-items-center">
+                    <div className="col-md-6">
+                      <h4 className="card-title mb-5">Add New Product</h4>
+                    </div>
+                  </div>
 
                   <form className="forms-sample" onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-md-4">
-                        <p>Select Modal Company</p>
-                        <div className="form-group row">
-                          <div className="col-md-12">
-                            <select
-                              className="form-control"
-                              name="company"
-                              value={productDetails.company}
-                              onChange={handleInputChange}
-                            >
-                              <option value="">Select Company</option>
-                              <option value="iPhone">iPhone</option>
-                              <option value="Samsung">Samsung</option>
-                              <option value="Oppo">Oppo</option>
-                              <option value="Realme">Realme</option>
-                            </select>
-                          </div>
+                        <p>Company Name <span className="text-danger">*</span></p>
+                        <div className="form-group">
+                          <select
+                            className="form-control"
+                            name="company"
+                            value={productDetails.company}
+                            onChange={handleInputChange}
+                          >
+                            <option value="">Select Company</option>
+                            <option value="iPhone">iPhone</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Oppo">Oppo</option>
+                            <option value="Realme">Realme</option>
+                          </select>
                         </div>
                       </div>
-                      <div className="col-md-8">
+                      <div className="col-md-4">
                         <div className="form-group">
-                          <label>Enter Product Name</label>
+                          <label>Model Name <span className="text-danger">*</span></label>
                           <input
                             type="text"
                             className="form-control"
-                            name="name"
-                            value={productDetails.name}
+                            name="modelName"
+                            value={productDetails.modelName}
                             onChange={handleInputChange}
-                            placeholder="Enter Product Name"
+                            placeholder="Enter Model Name"
                           />
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="form-group">
-                          <label>Regular Product Price ( ₹ )</label>
+                          <label>Seller Name</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="sellerName"
+                            value={productDetails.sellerName}
+                            onChange={handleInputChange}
+                            placeholder="Enter Seller Name"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label>Seller Mobile No</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="sellerMobile"
+                            value={productDetails.sellerMobile}
+                            onChange={handleInputChange}
+                            placeholder="Seller Mobile No"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label>IMEI No <span className="text-danger">*</span></label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="imei"
+                            value={productDetails.imei}
+                            onChange={handleInputChange}
+                            placeholder="IMEI No"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label>Cost Price ( ₹ )</label>
                           <input
                             type="number"
                             className="form-control"
                             name="regularPrice"
                             value={productDetails.regularPrice}
                             onChange={handleInputChange}
-                            placeholder="Enter Regular Price"
+                            placeholder="Enter Cost Price"
                           />
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="form-group">
-                          <label>Add Discount (%)</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            name="discount"
-                            value={productDetails.discount}
-                            onChange={handleInputChange}
-                            placeholder="Add Discount"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="form-group">
-                          <label>Sale Price ( ₹ )</label>
+                          <label>Last Selling Price ( ₹ )</label>
                           <input
                             type="number"
                             className="form-control"
                             name="salePrice"
                             value={productDetails.salePrice}
-                            readOnly
+                            onChange={handleInputChange}
+                            placeholder="Enter Last Selling Price"
                           />
                         </div>
                       </div>
@@ -163,6 +182,33 @@ const AddProducts = () => {
                           </select>
                         </div>
                       </div>
+                      <div className="col-md-4 d-flex align-items-center mt-3">
+                        <div className="form-group">
+                          <label className='font-weight-bold'>Is Billbox Available?</label>
+                          <div>
+                            <label className="mr-3">
+                              <input
+                                type="radio"
+                                name="billboxAvailable"
+                                value="yes"
+                                checked={productDetails.billboxAvailable === 'yes'}
+                                onChange={handleInputChange}
+                              />{' '}
+                              Yes
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="billboxAvailable"
+                                value="no"
+                                checked={productDetails.billboxAvailable === 'no'}
+                                onChange={handleInputChange}
+                              />{' '}
+                              No
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <button type="submit" className="btn btn-primary mr-2">
@@ -174,11 +220,14 @@ const AddProducts = () => {
                       onClick={() =>
                         setProductDetails({
                           company: '',
-                          name: '',
+                          modelName: '',
+                          sellerName: '',
+                          sellerMobile: '',
+                          imei: '',
                           regularPrice: '',
-                          discount: '',
                           salePrice: '',
                           active: 'yes',
+                          billboxAvailable: 'yes',
                         })
                       }
                     >

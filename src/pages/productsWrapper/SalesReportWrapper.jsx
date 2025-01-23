@@ -1,16 +1,16 @@
 import React from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
-import AllDiscounts from "../../components/discounts/AllDiscounts";
+import SalesReport from "../../components/products/SalesReport";
 
-const AllDiscountsWrapper = () => {
+const SalesReportWrapper = () => {
   return (
     <>
       <div className="container-fluid page-body-wrapper">
         <Sidebar />
-        <AllDiscounts />
+        <SalesReport/>
       </div>
     </>
   );
 };
 
-export default AllDiscountsWrapper;
+export default SalesReportWrapper;
