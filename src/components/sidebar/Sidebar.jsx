@@ -32,7 +32,7 @@ const Sidebar = () => {
           <li class="nav-item">
             <Link class="nav-link" to="/add-category">
               <i class="icon-box menu-icon"></i>
-              <span class="menu-title">Sell Now</span>
+              <span class="menu-title">Whatsapp Send</span>
             </Link>
           </li>
       

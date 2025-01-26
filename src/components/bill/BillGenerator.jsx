@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import "jspdf-autotable";
-import Footer from "../footer/Footer";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import { initializeApp } from "firebase/app";
-import SearchFilter from "../products/SearchFilter";
-import "./Sell.css";
 import { useNavigate } from "react-router-dom";
+import SearchFilter from "../products/SearchFilter";
+import Footer from "../footer/Footer";
+import "./Sell.css";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -29,6 +28,9 @@ const BillGenerator = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  console.log("BILLS :" , bills);
+
+  const navigate = useNavigate(); // Use navigate hook
   const productsPerPage = 10;
 
   useEffect(() => {
@@ -51,85 +53,33 @@ const BillGenerator = () => {
     });
   }, []);
 
-
-  const handleFilter = (filterCriteria) => {
-    const { company, minPrice, maxPrice, search, startDate, endDate } =
-      filterCriteria;
-
-    setLoading(true);
-
-    const filtered = bills.filter((product) => {
-      const matchesCompany = company
-        ? product.company?.toLowerCase().includes(company.toLowerCase())
-        : true;
-
-      const matchesSearch = search
-        ? product.name?.toLowerCase().includes(search.toLowerCase()) ||
-          product.company?.toLowerCase().includes(search.toLowerCase()) ||
-          product.salePrice?.toString().includes(search) ||
-          product.regularPrice?.toString().includes(search)
-        : true;
-
-      const matchesMinPrice = minPrice ? product.salePrice >= minPrice : true;
-      const matchesMaxPrice = maxPrice ? product.salePrice <= maxPrice : true;
-
-      const matchesStartDate = startDate
-        ? new Date(product.timestamp) >= new Date(startDate)
-        : true;
-
-      const matchesEndDate = endDate
-        ? new Date(product.timestamp) <= new Date(endDate)
-        : true;
-
-      return (
-        matchesCompany &&
-        matchesSearch &&
-        matchesMinPrice &&
-        matchesMaxPrice &&
-        matchesStartDate &&
-        matchesEndDate
-      );
-    });
-
-    setFilteredProducts(filtered);
-    setLoading(false);
+  const handleGenerateInvoice = (billId) => {
+    navigate(`/bill-generate/${billId}`);
   };
+
+  useEffect(() => {
+  const handleFocus = () => {
+    window.location.reload(); // Refresh the page
+  };
+
+  window.addEventListener("focus", handleFocus);
+
+  return () => {
+    window.removeEventListener("focus", handleFocus);
+  };
+}, []);
+
 
   const handleSelectProduct = (billId, productId) => {
-    const selectedProduct = `${billId}-${productId}`;
-    setSelectedProducts((prev) =>
-      prev.includes(selectedProduct)
-        ? prev.filter((id) => id !== selectedProduct)
-        : [...prev, selectedProduct]
-    );
-  };
-  
-
-  const saveBillData = () => {
-    const selectedProductDetails = filteredProducts.filter((product) =>
-      selectedProducts.includes(product.id)
+    const selectedBill = bills.find((bill) => bill.id === billId);
+    const selectedProduct = selectedBill.products.find(
+      (product) => product.id === productId
     );
 
-    if (!selectedProductDetails.length) {
-      alert("No products selected for billing.");
-      return;
-    }
-
-    const billData = {
-      products: selectedProductDetails,
-      timestamp: new Date().toISOString(),
-    };
-
-    const newBillRef = ref(database, `bills/${Date.now()}`);
-    set(newBillRef, billData)
-      .then(() => {
-        alert("Bill data saved successfully!");
-        setSelectedProducts([]); // Clear selected products
-      })
-      .catch((error) => {
-        console.error("Error saving bill data:", error);
-        alert("Failed to save bill data. Please try again.");
-      });
+    // Navigate to the invoice generation route with data
+    navigate(`/generate-invoice`, {
+      state: { bill: selectedBill, product: selectedProduct },
+    });
   };
 
   const currentProducts = filteredProducts.slice(
@@ -148,9 +98,7 @@ const BillGenerator = () => {
               <div className="card">
                 <div className="card-body">
                   <h4 className="card-title mb-5">Generate E-bill</h4>
-
-                  <SearchFilter onFilter={handleFilter} />
-
+                  <SearchFilter onFilter={() => {}} />
                   {loading ? (
                     <div className="loader">Loading...</div>
                   ) : (
@@ -168,53 +116,54 @@ const BillGenerator = () => {
                               <th>Company</th>
                               <th>Price</th>
                               <th>Quantity</th>
-                              
                             </tr>
                           </thead>
                           <tbody>
-  {bills.length > 0 ? (
-    bills.map((bill) => (
-      bill.products.map((product, index) => (
-        <tr key={product.id}>
-          {/* Only show buyer details for the first product */}
-          {index === 0 && (
-            <>
-<td rowSpan={bill.products.length}>
-  <button
-    onClick={() => handleSelectProduct(bill.id, product.id)}
-    className={`btn ${selectedProducts.includes(`${bill.id}-${product.id}`) ? "btn-danger" : "btn-outline-success"}`}
-  >
-    {selectedProducts.includes(`${bill.id}-${product.id}`) ? "Deselect" : "Generate Invoice"}
-  </button>
-</td>
-
-
-              <td rowSpan={bill.products.length}>{bill.id}</td>
-              <td rowSpan={bill.products.length}>{bill.customerDetails?.name}</td>
-              <td rowSpan={bill.products.length}>{bill.customerDetails?.contact}</td>
-              <td rowSpan={bill.products.length}>{bill.customerDetails?.address}</td>
-            </>
-          )}
-          <td>{product.name}</td>
-          <td>{product.company}</td>
-          <td>₹{product.salePrice}</td>
-          <td>{product.quantity}</td>
-        </tr>
-      ))
-    ))
-  ) : (
-    <tr>
-      <td colSpan="8" style={{ textAlign: "center" }}>
-        No bills found.
-      </td>
-    </tr>
-  )}
-</tbody>
-
+                            {bills.length > 0 ? (
+                              bills.map((bill) =>
+                                bill.products.map((product, index) => (
+                                  <tr key={product.id}>
+                                    {index === 0 && (
+                                      <>
+                                        <td rowSpan={bill.products.length}>
+                                        <button
+          onClick={() => handleGenerateInvoice(bill.id)}
+          className="btn btn-outline-success"
+        >
+          Generate Invoice
+        </button>
+                                        </td>
+                                        <td rowSpan={bill.products.length}>
+                                          {bill.id}
+                                        </td>
+                                        <td rowSpan={bill.products.length}>
+                                          {bill.customerDetails?.name}
+                                        </td>
+                                        <td rowSpan={bill.products.length}>
+                                          {bill.customerDetails?.contact}
+                                        </td>
+                                        <td rowSpan={bill.products.length}>
+                                          {bill.customerDetails?.address}
+                                        </td>
+                                      </>
+                                    )}
+                                    <td>{product.name}</td>
+                                    <td>{product.company}</td>
+                                    <td>₹{product.salePrice}</td>
+                                    <td>{product.quantity}</td>
+                                  </tr>
+                                ))
+                              )
+                            ) : (
+                              <tr>
+                                <td colSpan="8" style={{ textAlign: "center" }}>
+                                  No bills found.
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
                         </table>
                       </div>
-
-                      {/* Pagination */}
                       <div className="pagination mt-3 d-flex align-center justify-content-center">
                         {[...Array(totalPages)].map((_, i) => (
                           <button
@@ -232,7 +181,6 @@ const BillGenerator = () => {
                       </div>
                     </>
                   )}
-
                 </div>
               </div>
             </div>
