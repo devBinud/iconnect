@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "jspdf-autotable";
 import Footer from "../footer/Footer";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import SearchFilter from "../products/SearchFilter";
 

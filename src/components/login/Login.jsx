@@ -1,53 +1,55 @@
-// src/pages/Login.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import "../login/Login.css";
+import logo from '../../assets/logo/logomain.jpeg'; // Ensure the correct path
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    // Static credentials
-    const staticUsername = 'admin';
-    const staticPassword = 'password123';
-
-    if (username === staticUsername && password === staticPassword) {
-      localStorage.setItem('isAuthenticated', 'true'); // Save login state
-      navigate('/'); // Redirect to home
+    
+    if (username === 'admin' && password === 'admin') {
+      localStorage.setItem('userToken', 'authenticated'); // Simulating login
+      window.location.href = '/'; // Redirect to dashboard
     } else {
       setError('Invalid username or password');
     }
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
+    <div className="login-container">
+      <form className="login-box" onSubmit={handleLogin}>
+        <img src={logo} alt="Logo" className="login-logo" />
+        <h2>Admin Login</h2>
+        {error && <p className="error">{error}</p>}
+
+        <input 
+          type="text" 
+          placeholder="Username" 
+          value={username} 
+          onChange={(e) => setUsername(e.target.value)} 
+          required 
+        />
+
+        <div className="password-container">
+          <input 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            required 
           />
+          <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </div>
-        <div>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+
         <button type="submit">Login</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
