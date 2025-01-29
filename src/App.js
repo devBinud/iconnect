@@ -32,7 +32,7 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/add-category" element={isAuthenticated ? <AddCategory /> : <Navigate to="/login" />} />
+        <Route path="/share-product" element={isAuthenticated ? <AddCategory /> : <Navigate to="/login" />} />
         <Route path="/all-categories" element={isAuthenticated ? <AllCategories /> : <Navigate to="/login" />} />
         <Route path="/add-product" element={isAuthenticated ? <AddProducts /> : <Navigate to="/login" />} />
         <Route path="/all-products" element={isAuthenticated ? <AllProducts /> : <Navigate to="/login" />} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import "./Navbar.css";
-import logo from "../../assets/logo/logonew.png";
-import logo__small from "../../assets/logo/logonew.png";
+import logo from "../../assets/logo/logomain.jpeg";
+import logo__small from "../../assets/logo/logomain.jpeg";
 import profile from "../../assets/profile/user.png";
 
 

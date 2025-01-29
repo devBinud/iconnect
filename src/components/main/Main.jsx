@@ -1,8 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Footer from '../footer/Footer';
-import dash__img from "../../assets/background/2.jpg";
+import { getDatabase, ref, onValue } from 'firebase/database';
+import { initializeApp } from 'firebase/app';
+import dash__img from "../../assets/image/bgg.jpg";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyArDqtcSmGsHreF89UWHVxsiivO9vZr8E8",
+  authDomain: "iconnect-58f0b.firebaseapp.com",
+  databaseURL: "https://iconnect-58f0b-default-rtdb.firebaseio.com",
+  projectId: "iconnect-58f0b",
+  storageBucket: "iconnect-58f0b.firebasestorage.app",
+  messagingSenderId: "343564096721",
+  appId: "1:343564096721:web:70c585e32e2679f5c1e1f0",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 const Main = () => {
+  const [totalPhoneCompanies, setTotalPhoneCompanies] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [todaysOrders, setTodaysOrders] = useState(0);
+  const [todaysSales, setTodaysSales] = useState(0);
+
+  useEffect(() => {
+    const billsRef = ref(database, 'bills');
+    const companiesRef = ref(database, 'phoneCompanies'); // Assuming there's a 'phoneCompanies' node in Firebase
+    const productsRef = ref(database, 'products'); // Assuming there's a 'products' node in Firebase
+
+    // Fetching total phone companies
+    onValue(companiesRef, (snapshot) => {
+      const data = snapshot.val();
+      setTotalPhoneCompanies(data ? Object.keys(data).length : 0);
+    });
+
+    // Fetching total products
+    onValue(productsRef, (snapshot) => {
+      const data = snapshot.val();
+      setTotalProducts(data ? Object.keys(data).length : 0);
+    });
+
+    // Fetching bills data to calculate today's orders and sales
+    onValue(billsRef, (snapshot) => {
+      const data = snapshot.val();
+      let orders = 0;
+      let sales = 0;
+      const today = new Date().toLocaleDateString("en-IN");
+
+      if (data) {
+        Object.values(data).forEach(bill => {
+          const billDate = new Date(bill.timestamp).toLocaleDateString("en-IN");
+          if (billDate === today) {
+            orders += bill.products.length; // Assuming each product in the bill counts as an order
+            sales += bill.products.reduce((sum, product) => sum + (product.salePrice * product.quantity), 0);
+          }
+        });
+      }
+
+      setTodaysOrders(orders);
+      setTodaysSales(sales);
+    });
+  }, []);
+
   return (
     <>
       <div className="main-panel">
@@ -17,119 +78,80 @@ const Main = () => {
                     <span style={{ color: "#004aad" }}>CONNECT</span>
                   </h3>
                   <h6 className="font-weight-normal mb-0">
-  Effortlessly manage and organize your {" "}
-  <span className="text-primary">
-    product inventory with ease, ensuring smooth operations and growth.
-  </span>
-</h6>
-
+                    Effortlessly manage and organize your{" "}
+                    <span className="text-primary">
+                      product inventory with ease, ensuring smooth operations and growth.
+                    </span>
+                  </h6>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="row align-items-center">
             <div className="col-md-6 grid-margin stretch-card">
-                <div className="card-people mt-auto">
-                  <img
-                    src={dash__img}
-                    className='img-fluid'
-                    alt="dashboard-background"
-                  />
-                </div>
+              <div className="card-people mt-auto">
+                <img
+                  src={dash__img}
+                  className="img-fluid"
+                  alt="dashboard-background"
+                />
+              </div>
             </div>
+
             <div className="col-md-6 grid-margin transparent">
               <div className="row">
-                <div className="col-md-6 mb-4 stretch-card transparent">
+                <div className="col-md-12 mb-4 stretch-card transparent">
                   <div className="card card-light-danger">
                     <div className="card-body">
                       <p className="mb-4">Total Phone Companies</p>
-                      <p className="fs-30 mb-2">30</p>
+                      <p className="fs-30 mb-2">{totalPhoneCompanies}</p>
                       <p>Calculation till today</p>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 mb-4 stretch-card transparent">
+
+                <div className="col-md-12 mb-4 stretch-card transparent">
                   <div className="card card-light-blue">
                     <div className="card-body">
                       <p className="mb-4">Total Products</p>
-                      <p className="fs-30 mb-2">544</p>
+                      <p className="fs-30 mb-2">{totalProducts}</p>
                       <p>Last updated on today</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-                  <div className="card card-light-blue">
-                    <div className="card-body">
-                      <p className="mb-4">Todays Orders</p>
-                      <p className="fs-30 mb-2">120</p>
-                      <p>Last updated on today</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 stretch-card transparent">
-                  <div className="card card-light-danger">
-                    <div className="card-body">
-                      <p className="mb-4">Todays Sales</p>
-                      <p className="fs-30 mb-2">32</p>
-                      <p>Data as per recent calculation</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="row mt-3">
-                <div className="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-                  <div className="card card-light-danger">
+                <div className="col-md-12 mb-4 mb-lg-0 stretch-card transparent">
+                  <div className="card card-light-blue">
                     <div className="card-body">
-                      <p className="mb-4">Todays Orders</p>
-                      <p className="fs-30 mb-2">120</p>
+                      <p className="mb-4">Today's Orders</p>
+                      <p className="fs-30 mb-2">{todaysOrders}</p>
                       <p>Last updated on today</p>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 stretch-card transparent">
-                  <div className="card card-light-blue">
-                    <div className="card-body">
-                      <p className="mb-4">Todays Sales</p>
-                      <p className="fs-30 mb-2">32</p>
-                      <p>Data as per recent calculation</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <div className="row mt-3">
-                <div className="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-                  <div className="card card-light-blue">
-                    <div className="card-body">
-                      <p className="mb-4">Todays Orders</p>
-                      <p className="fs-30 mb-2">120</p>
-                      <p>Last updated on today</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 stretch-card transparent">
+                <div className="col-md-12 mt-3 stretch-card transparent">
                   <div className="card card-light-danger">
                     <div className="card-body">
-                      <p className="mb-4">Todays Sales</p>
-                      <p className="fs-30 mb-2">32</p>
+                      <p className="mb-4">Today's Sales</p>
+                      <p className="fs-30 mb-2">{todaysSales}</p>
                       <p>Data as per recent calculation</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
         {/* content-wrapper ends */}
-        {/* partial:partials/_footer.html */}
-        <Footer/>
+        {/* Footer */}
+        <Footer />
       </div>
     </>
   );
-}
+};
 
-export default Main
+export default Main;

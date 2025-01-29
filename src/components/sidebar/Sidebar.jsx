@@ -30,7 +30,7 @@ const Sidebar = () => {
           </li>
         
           <li class="nav-item">
-            <Link class="nav-link" to="/add-category">
+            <Link class="nav-link" to="/share-product">
               <i class="icon-box menu-icon"></i>
               <span class="menu-title">Whatsapp Send</span>
             </Link>

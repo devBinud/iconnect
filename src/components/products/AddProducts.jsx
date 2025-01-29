@@ -86,7 +86,20 @@ const AddProducts = () => {
                             <option value="iPhone">iPhone</option>
                             <option value="Samsung">Samsung</option>
                             <option value="Oppo">Oppo</option>
+                            <option value="Vivo">Vivo</option>
                             <option value="Realme">Realme</option>
+                            <option value="Oneplus">Oneplus</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Motorola">Motorola</option>
+                            <option value="Nokia">Nokia</option>
+                            <option value="Google">Google</option>
+                            <option value="HTC">HTC</option>
+                            <option value="LG">LG</option>
+                            <option value="Honor">Honor</option>
+                            <option value="Karbon">Karbon</option>
+                            <option value="Sony">Sony</option>
+                            <option value="Asus">Asus</option>
+                            <option value="Infinix">Infinix</option>
                           </select>
                         </div>
                       </div>

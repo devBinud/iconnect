@@ -138,26 +138,27 @@ const Sell = () => {
       return;
     }
   
-    // Format the message
+    // Format the message with bold text for customer name and closing message
     const formattedMessage = `
-      *Customer Details:*
-      Name: ${customerDetails.name}
-      Contact: ${customerDetails.contact}
-      Address: ${customerDetails.address}
+  *Hey ${customerDetails.name}*,
   
-      *Products:*
-      ${selectedProductDetails.map((product) => `
-        - ${product.name} (Quantity: ${quantities[product.id] || 1})
-      `).join('')}
+  I hope you are doing well. We have product recommendations for you which are available now at our iConnect store:
   
-      *Timestamp:* ${new Date().toISOString()}
+  ${selectedProductDetails.map((product, index) => `
+  ${index + 1}) ${product.name}
+  `).join('')}
+  
+  *Thanking you*,
+  iConnect
+  B K Kakoty Road, Ulubari
+  Guwahati, PIN - 781026
     `;
   
     // Encode the message for WhatsApp
     const encodedMessage = encodeURIComponent(formattedMessage);
   
     // Open WhatsApp with the message
-    const whatsappUrl = `https://wa.me/9706393924?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${customerDetails.contact}?text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
   
     // Optionally, reset the form after sending
@@ -165,6 +166,7 @@ const Sell = () => {
     setQuantities({}); // Clear quantities
     setCustomerDetails({ name: "", contact: "", address: "", warrantyAvailable: "No", warrantyDuration: "" }); // Reset customer details
   };
+  
 
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
@@ -261,7 +263,6 @@ const Sell = () => {
         <tr>
           <th>Product Name</th>
           <th>Price</th>
-          <th>Quantity</th>
         </tr>
       </thead>
       <tbody>
@@ -273,17 +274,6 @@ const Sell = () => {
             <tr key={productId}>
               <td>{product.name}</td>
               <td>₹{product.salePrice}</td>
-              <td>
-                <input
-                  type="number"
-                  value={quantities[productId] || 1}
-                  onChange={(e) =>
-                    handleQuantityChange(productId, e.target.value)
-                  }
-                  className="form-control"
-                  min="1"
-                />
-              </td>
             </tr>
           );
         })}

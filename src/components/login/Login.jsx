@@ -12,7 +12,7 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     
-    if (username === 'admin' && password === 'admin') {
+    if (username === 'admin' && password === 'iconnect@2025Admin') {
       localStorage.setItem('userToken', 'authenticated'); // Simulating login
       window.location.href = '/'; // Redirect to dashboard
     } else {

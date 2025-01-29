@@ -65,6 +65,40 @@ const SalesReport = () => {
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
+  const today = new Date();
+  const formattedToday = today.toLocaleDateString("en-IN");
+
+  const getFormattedDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString("en-IN");
+  };
+
+  // Format the amount in Indian currency format
+  const formatCurrency = (amount) => {
+    return amount.toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+    });
+  };
+
+  // Calculate today's sales
+  const todaySales = bills.reduce((sum, bill) => {
+    const billDate = new Date(bill.timestamp);
+    const isToday = billDate.toLocaleDateString("en-IN") === formattedToday;
+
+    if (isToday) {
+      return (
+        sum +
+        bill.products.reduce(
+          (productSum, product) =>
+            productSum + product.salePrice * product.quantity,
+          0
+        )
+      );
+    }
+    return sum;
+  }, 0);
+
   return (
     <>
       <div className="main-panel">
@@ -76,28 +110,31 @@ const SalesReport = () => {
                   <h4 className="card-title mb-4">SALES REPORT</h4>
 
                   {/* Daily Sales Total */}
-                 <div className="row justify-content-between">
-                 <div className="col-md-6 mb-4 stretch-card transparent">
-                  <div className="card card-light-danger">
-                    <div className="card-body">
-                      <p className="mb-4">Todays Sale</p>
-                      <p className="fs-30 mb-2">₹{totalSales.toFixed(2)}</p>
-                      <p>Last updated on today</p>
+                  <div className="row justify-content-between">
+                    <div className="col-md-6 mb-4 stretch-card transparent">
+                      <div className="card card-light-danger">
+                        <div className="card-body">
+                          <p className="mb-4">Today's Sale</p>
+                          <p className="fs-30 mb-2">
+                            {formatCurrency(todaySales)}
+                          </p>
+                          <p>Last updated on today</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 mb-4 stretch-card transparent">
+                      <div className="card card-light-blue">
+                        <div className="card-body">
+                          <p className="mb-4">Total Sales</p>
+                          <p className="fs-30 mb-2">
+                            {formatCurrency(totalSales)}
+                          </p>
+                          <p>Last updated on today</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                  <div className="col-md-6 mb-4 stretch-card transparent">
-                  <div className="card card-light-blue">
-                    <div className="card-body">
-                      <p className="mb-4">Total Sales</p>
-                      <p className="fs-30 mb-2">₹{totalSales.toFixed(2)}</p>
-                      <p>Last updated on today</p>
-                    </div>
-                  </div>
-                </div>
-
-                 </div>
 
                   {/* Search Filter */}
                   <SearchFilter onFilter={() => {}} />
@@ -117,6 +154,7 @@ const SalesReport = () => {
                               <th>Price (₹)</th>
                               <th>Quantity</th>
                               <th>Total (₹)</th>
+                              <th>Timestamp</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -135,20 +173,20 @@ const SalesReport = () => {
                                       </td>
                                     )}
                                     <td>{product.name}</td>
-                                    <td>₹{product.salePrice.toFixed(2)}</td>
+                                    <td>{formatCurrency(product.salePrice)}</td>
                                     <td>{product.quantity}</td>
                                     <td>
-                                      ₹
-                                      {(product.salePrice * product.quantity).toFixed(
-                                        2
+                                      {formatCurrency(
+                                        product.salePrice * product.quantity
                                       )}
                                     </td>
+                                    <td>{getFormattedDate(bill.timestamp)}</td>
                                   </tr>
                                 ))
                               )
                             ) : (
                               <tr>
-                                <td colSpan="6" style={{ textAlign: "center" }}>
+                                <td colSpan="7" style={{ textAlign: "center" }}>
                                   No bills found.
                                 </td>
                               </tr>
