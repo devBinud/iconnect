@@ -177,7 +177,7 @@ const Sell = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5">Product Sale</h4>
+                  <h4 className="card-title mb-5 text-uppercase">Product Sale</h4>
 
                   <SearchFilter onFilter={handleFilter} />
 

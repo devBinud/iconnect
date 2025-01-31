@@ -95,7 +95,7 @@ const InvoicePage = () => {
             <p className="invoice-id">Bill ID: {id}</p>
             <p>Date: {formatDate(bill.timestamp)}</p>
             <p>Payment Mode: Cash</p>
-            <p>Warranty Available : {bill.customerDetails?.warrantyDuration} Days</p>
+            <p>Available for : {bill.customerDetails?.warrantyDuration}</p>
           </div>
         </div>
 

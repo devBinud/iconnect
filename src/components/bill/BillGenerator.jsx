@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import SearchFilter from "../products/SearchFilter";
@@ -24,7 +24,6 @@ const database = getDatabase(app);
 const BillGenerator = () => {
   const [bills, setBills] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -70,23 +69,6 @@ const BillGenerator = () => {
 }, []);
 
 
-  const handleSelectProduct = (billId, productId) => {
-    const selectedBill = bills.find((bill) => bill.id === billId);
-    const selectedProduct = selectedBill.products.find(
-      (product) => product.id === productId
-    );
-
-    // Navigate to the invoice generation route with data
-    navigate(`/generate-invoice`, {
-      state: { bill: selectedBill, product: selectedProduct },
-    });
-  };
-
-  const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage
-  );
-
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   return (
@@ -97,7 +79,7 @@ const BillGenerator = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5">Generate E-bill</h4>
+                  <h4 className="card-title mb-5 text-uppercase">Generate E-bill</h4>
                   <SearchFilter onFilter={() => {}} />
                   {loading ? (
                     <div className="loader">Loading...</div>

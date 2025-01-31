@@ -31,7 +31,6 @@ const Sell = () => {
     warrantyAvailable: "No",
     warrantyDuration: "",
   });
-  const [quantities, setQuantities] = useState({}); // To store quantity for each selected product
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -108,12 +107,6 @@ const Sell = () => {
     );
   };
 
-  const handleQuantityChange = (productId, quantity) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [productId]: quantity,
-    }));
-  };
 
   const handleCustomerInputChange = (e) => {
     const { name, value } = e.target;
@@ -163,7 +156,6 @@ const Sell = () => {
   
     // Optionally, reset the form after sending
     setSelectedProducts([]); // Clear selected products
-    setQuantities({}); // Clear quantities
     setCustomerDetails({ name: "", contact: "", address: "", warrantyAvailable: "No", warrantyDuration: "" }); // Reset customer details
   };
   
@@ -183,7 +175,7 @@ const Sell = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5">Product Sale</h4>
+                  <h4 className="card-title mb-5">SHARE PRODUCT Via <span className="text-success">Whatsapp</span></h4>
 
                   <SearchFilter onFilter={handleFilter} />
 

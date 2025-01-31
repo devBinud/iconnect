@@ -35,6 +35,9 @@ const AllProducts = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
+
+  console.log("PRODUCTS API :", products);
+
   useEffect(() => {
     setLoading(true);
     const productsRef = ref(database, "mobileProducts");
@@ -188,7 +191,7 @@ const AllProducts = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5">All Products</h4>
+                  <h4 className="card-title mb-5 text-uppercase">All Products</h4>
 
                   <AllProductsFilter onFilter={handleFilter} />
 

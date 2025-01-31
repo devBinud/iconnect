@@ -29,20 +29,15 @@ const Sidebar = () => {
             </Link>
           </li>
         
+       
           <li class="nav-item">
-            <Link class="nav-link" to="/share-product">
-              <i class="icon-box menu-icon"></i>
-              <span class="menu-title">Whatsapp Send</span>
+            <Link class="nav-link" to="/quick-sale">
+              <i class="icon-book menu-icon"></i>
+              <span class="menu-title">Product Sale</span>
             </Link>
           </li>
-      
 
-          <li class="nav-item">
-            <Link class="nav-link" to="/sales-report">
-              <i class="icon-map menu-icon"></i>
-              <span class="menu-title">Sales Report</span>
-            </Link>
-          </li>
+      
           <li class="nav-item">
             <Link class="nav-link" to="/bill-generate">
               <i class="icon-folder menu-icon"></i>
@@ -50,10 +45,18 @@ const Sidebar = () => {
             </Link>
           </li>
 
+     
+          
           <li class="nav-item">
-            <Link class="nav-link" to="/quick-sale">
-              <i class="icon-book menu-icon"></i>
-              <span class="menu-title">Product Sale</span>
+            <Link class="nav-link" to="/share-product">
+              <i class="icon-share menu-icon"></i>
+              <span class="menu-title">Whatsapp Share</span>
+            </Link>
+          </li>
+          <li class="nav-item">
+            <Link class="nav-link" to="/sales-report">
+              <i class="icon-map menu-icon"></i>
+              <span class="menu-title">Sales Report</span>
             </Link>
           </li>
           

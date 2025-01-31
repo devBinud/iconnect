@@ -5,7 +5,7 @@ import storeMobileProduct from '../../firebase';
 const AddProducts = () => {
   const [productDetails, setProductDetails] = useState({
     company: '',
-    modelName: '',
+    name: '',  // Changed from 'modelName' to 'name'
     sellerName: '',
     sellerMobile: '',
     imei: '',
@@ -24,38 +24,40 @@ const AddProducts = () => {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ // Handle form submission
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    // Validate inputs
-    if (!productDetails.company || !productDetails.modelName || !productDetails.regularPrice) {
-      alert('Please fill in all required fields.');
-      return;
-    }
+  // Validate inputs
+  if (!productDetails.company || !productDetails.name || !productDetails.regularPrice) {  
+    alert('Please fill in all required fields.');
+    return;
+  }
 
-    // Add timestamp
-    const timestamp = Date.now();
-    const productData = {
-      ...productDetails,
-      timestamp,
-    };
-
-    // Save product to Firebase
-    storeMobileProduct(productData);
-    alert('Product added successfully!');
-    setProductDetails({
-      company: '',
-      modelName: '',
-      sellerName: '',
-      sellerMobile: '',
-      imei: '',
-      regularPrice: '',
-      salePrice: '',
-      active: 'yes',
-      billboxAvailable: 'yes',
-    });
+  // Add timestamp
+  const timestamp = Date.now();
+  const productData = {
+    ...productDetails,
+    timestamp,
   };
+
+  storeMobileProduct(productData);
+  alert('Product added successfully!');
+
+  // Reset form fields
+  setProductDetails({
+    company: '',
+    name: '',  
+    sellerName: '',
+    sellerMobile: '',
+    imei: '',
+    regularPrice: '',
+    salePrice: '',
+    active: 'yes',
+    billboxAvailable: 'yes',
+  });
+};
+
 
   return (
     <>
@@ -67,7 +69,7 @@ const AddProducts = () => {
                 <div className="card-body">
                   <div className="row align-items-center">
                     <div className="col-md-6">
-                      <h4 className="card-title mb-5">Add New Product</h4>
+                      <h4 className="card-title mb-5 text-uppercase">Add New Product</h4>
                     </div>
                   </div>
 
@@ -105,14 +107,14 @@ const AddProducts = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="form-group">
-                          <label>Model Name <span className="text-danger">*</span></label>
+                          <label>Product Name <span className="text-danger">*</span></label> {/* Changed from 'Model Name' to 'Product Name' */}
                           <input
                             type="text"
                             className="form-control"
-                            name="modelName"
-                            value={productDetails.modelName}
+                            name="name"  // Changed from 'modelName' to 'name'
+                            value={productDetails.name}  // Changed from 'modelName' to 'name'
                             onChange={handleInputChange}
-                            placeholder="Enter Model Name"
+                            placeholder="Enter Product Name"  // Changed from 'Enter Model Name' to 'Enter Product Name'
                           />
                         </div>
                       </div>
@@ -233,7 +235,7 @@ const AddProducts = () => {
                       onClick={() =>
                         setProductDetails({
                           company: '',
-                          modelName: '',
+                          name: '',  // Reset 'name' field
                           sellerName: '',
                           sellerMobile: '',
                           imei: '',
