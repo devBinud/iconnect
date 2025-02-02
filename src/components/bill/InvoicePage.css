@@ -1,0 +1,127 @@
+/* General container styling */
+.invoice-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color:#121212;
+  padding: 20px;
+}
+
+/* Invoice card */
+.invoice-card {
+  background: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 90%;
+  max-width: 610px;
+}
+.line__separator{
+  width:100%;
+  height: 0.5px;
+  background-color: #121212;
+}
+.shop__addressBox{
+  font-size: 12px;
+  line-height: 6px;
+  color: #333333;
+}
+.order__addressBox{
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.shop-logo{
+  width:140px;
+  height:97px
+}
+.header-logo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.right-text{
+  color:#dddddd;
+  text-transform:uppercase;
+
+}
+.order__addressBox p{
+  font-size: 14px;
+  line-height: 12px;
+}
+/* Header section */
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.store-info {
+  text-align: left;
+}
+
+.store-logo {
+  width: 100px;
+  margin-bottom: 10px;
+}
+
+.customer-info {
+  text-align: right;
+}
+
+/* Table styling */
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333333;
+}
+
+.invoice-table th,
+.invoice-table td {
+  padding: 10px;
+  text-align: left;
+  background-color: rgb(195, 229, 253);
+  border: 1px solid #989898;
+}
+
+.invoice-table th {
+  font-weight: bold;
+}
+
+.invoice-table td {
+  background-color: #f9f9f9;
+  border:1px solid #989898;
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+/* Total row styling */
+.total-row .total-label {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 15px;
+}
+
+.total-row .total-amount {
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Download button */
+.download-pdf-button {
+  margin-top: 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-pdf-button:hover {
+  background-color: #333333;
+}

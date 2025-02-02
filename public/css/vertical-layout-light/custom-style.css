@@ -1,0 +1,17 @@
+.color{
+    color : #3498DB
+}
+
+media (max-width: 480px) {
+    .navbar .navbar-brand-wrapper {
+        width: 81px!important;
+    }
+}
+
+@media (max-width: 991px) {
+    .navbar .navbar-menu-wrapper {
+        width: calc(100% - 75px)!important;
+        padding-left: 15px;
+        padding-right: 11px;
+    }
+}
