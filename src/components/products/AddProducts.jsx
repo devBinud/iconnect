@@ -99,7 +99,6 @@ const AddProducts = () => {
                             <option value="Motorola">Motorola</option>
                             <option value="Nokia">Nokia</option>
                             <option value="Google">Google</option>
-                            <option value="HTC">HTC</option>
                             <option value="LG">LG</option>
                             <option value="Honor">Honor</option>
                             <option value="Karbon">Karbon</option>
