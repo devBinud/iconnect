@@ -210,10 +210,10 @@ const AllProducts = () => {
                             <th>Product Name</th>
                             <th>IMEI No.</th> {/* New column for IMEI */}
                             <th>Regular Price</th>
-                            <th>Sale Price</th>
                             <th>Entry Date</th>
                             <th>Bill</th>
                             <th>Box</th>
+                            <th>Seller Name</th>
                             <th>Seller ID Proof</th>
                             <th>Action</th>
                           </tr>
@@ -226,10 +226,19 @@ const AllProducts = () => {
         <td>{product.name}</td>
         <td className="font-weight-bold text-primary">{product.imei || "No IMEI"}</td> {/* Display IMEI or "No IMEI" */}
         <td>₹{product.regularPrice}</td>
-        <td>₹{product.salePrice}</td>
         <td>{product.entryDate ? formatDate(product.entryDate) : "Not available"}</td> {/* Entry Date */}
         <td className="text-capitalize">{product.bill || "No"}</td>
         <td className="text-capitalize">{product.box || "No"}</td>
+        <td>
+    <span class="badge badge-primary">
+        { product.sellerName || "No Name" }
+    </span> 
+    <br /><br />
+    <span class="badge badge-secondary">
+        { product.sellerMobile || "No Phone Number" }
+    </span>
+</td>
+
         <td>{product.sellerIdProof || "No documents"}</td>
         <td>
           <button
