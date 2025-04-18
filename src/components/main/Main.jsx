@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Footer from '../footer/Footer';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import dash__img from "../../assets/image/bgg.jpg";
+
 
 // Firebase configuration
 const firebaseConfig = {
@@ -24,6 +24,9 @@ const Main = () => {
   const [totalProducts, setTotalProducts] = useState(0);
   const [todaysOrders, setTodaysOrders] = useState(0);
   const [todaysSales, setTodaysSales] = useState(0);
+  const [productsAddedLast10Days, setProductsAddedLast10Days] = useState(0);
+  const [productsAddedToday, setProductsAddedToday] = useState(0);
+
 
   useEffect(() => {
     const billsRef = ref(database, 'bills');
@@ -72,6 +75,64 @@ const Main = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const db = getDatabase(app);
+    const mobileProductsRef = ref(db, "mobileProducts");
+  
+    onValue(mobileProductsRef, (snapshot) => {
+      const data = snapshot.val();
+      let productCount = 0;
+      let companySet = new Set();
+      let addedInLast10Days = 0;
+  
+      const today = new Date();
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(today.getDate() - 10);
+  
+      for (let key in data) {
+        const product = data[key];
+        productCount++;
+        companySet.add(product.company);
+  
+        // Check entryDate
+        if (product.entryDate) {
+          const productDate = new Date(product.entryDate);
+          if (productDate >= tenDaysAgo && productDate <= today) {
+            addedInLast10Days++;
+          }
+        }
+      }
+  
+      setTotalProducts(productCount);
+      setTotalPhoneCompanies(companySet.size);
+      setProductsAddedLast10Days(addedInLast10Days);
+    });
+  }, []);
+
+  // Todays
+  useEffect(() => {
+    const companiesRef = ref(database, 'mobileProducts');
+  
+    onValue(companiesRef, (snapshot) => {
+      const data = snapshot.val();
+      let todayCount = 0;
+  
+      if (data) {
+        const today = new Date().toLocaleDateString("en-IN");
+  
+        Object.values(data).forEach(product => {
+          const addedDate = new Date(product.entryDate).toLocaleDateString("en-IN");
+          if (addedDate === today) {
+            todayCount++;
+          }
+        });
+      }
+  
+      setProductsAddedToday(todayCount);
+    });
+  }, []);
+  
+
   // Function to format numbers in Indian style
   const formatIndianNumber = (num) => {
     return new Intl.NumberFormat('en-IN').format(num);
@@ -91,7 +152,7 @@ const Main = () => {
                     <span style={{ color: "#004aad" }}>CONNECT</span>
                   </h3>
                   <h6 className="font-weight-normal mb-0">
-                    Effortlessly manage and organize youryyyy{" "}
+                    Effortlessly manage and organize your{" "}
                     <span className="text-primary">
                       product inventory with ease, ensuring smooth operations and growth.
                     </span>
@@ -102,43 +163,43 @@ const Main = () => {
           </div>
 
           <div className="row align-items-center">
-            <div className="col-md-6 grid-margin stretch-card">
-              <div className="card-people mt-auto">
-                <img
-                  src={dash__img}
-                  className="img-fluid"
-                  alt="dashboard-background"
-                />
-              </div>
-            </div>
-
-            <div className="col-md-6 grid-margin transparent">
+            <div className="col-md-12 grid-margin transparent">
               <div className="row">
-                <div className="col-md-12 mb-4 stretch-card transparent">
-                  <div className="card card-light-danger">
-                    <div className="card-body">
+                <div className="col-md-4 mb-4 stretch-card transparent">
+                  <div className="card card-dark-blue">
+                    <div className="card-body text-center">
                       <p className="mb-4">Total Phone Companies</p>
-                      <p className="fs-30 mb-2">{formatIndianNumber(totalPhoneCompanies)}</p>
-                      <p>Calculation till today</p>
+                      <p className="fs-30 mb-2">{totalPhoneCompanies}</p>
+                      <p>Last updated on today</p>
                     </div>
                   </div>
                 </div>
-
-                <div className="col-md-12 mb-4 stretch-card transparent">
-                  <div className="card card-light-blue">
-                    <div className="card-body">
+                <div className="col-md-4 mb-4 stretch-card transparent">
+                  <div className="card card-dark-blue">
+                    <div className="card-body text-center">
                       <p className="mb-4">Total Products</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(totalProducts)}</p>
                       <p>Last updated on today</p>
                     </div>
                   </div>
                 </div>
+
+<div className="col-md-4 mb-4 stretch-card transparent">
+                  <div className="card card-dark-blue">
+                    <div className="card-body text-center">
+                      <p className="mb-4">Products Added </p>
+                      <p className="fs-30 mb-2">{formatIndianNumber(productsAddedLast10Days)}</p>
+                      <p>Last 10 days data</p>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
               <div className="row mt-3">
-                <div className="col-md-12 mb-4 mb-lg-0 stretch-card transparent">
-                  <div className="card card-light-blue">
-                    <div className="card-body">
+                <div className="col-md-4 mb-4 mb-lg-0 stretch-card transparent">
+                  <div className="card card-dark-blue">
+                    <div className="card-body text-center">
                       <p className="mb-4">Today's Orders</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(todaysOrders)}</p>
                       <p>Last updated on today</p>
@@ -146,15 +207,27 @@ const Main = () => {
                   </div>
                 </div>
 
-                <div className="col-md-12 mt-3 stretch-card transparent">
-                  <div className="card card-light-danger">
-                    <div className="card-body">
+                <div className="col-md-4 stretch-card transparent">
+                  <div className="card card-dark-blue">
+                    <div className="card-body text-center">
                       <p className="mb-4">Today's Sales</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(todaysSales)}</p>
                       <p>Data as per recent calculation</p>
                     </div>
                   </div>
                 </div>
+
+                <div className="col-md-4 stretch-card transparent">
+                  <div className="card card-dark-blue">
+                    <div className="card-body text-center">
+                      <p className="mb-4">Products Added Today</p>
+                      <p className="fs-30 mb-2">{formatIndianNumber(productsAddedToday)}</p>
+                      <p>Based on latest entry logs</p>
+                    </div>
+                  </div>
+                </div>
+
+                
               </div>
             </div>
           </div>

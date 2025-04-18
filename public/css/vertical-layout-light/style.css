@@ -28449,7 +28449,8 @@ div.tagsinput span.tag a {
 }
 
 .content-wrapper {
-  background: #F5F7FF;
+  /* background: #F5F7FF; */
+  background: #e2e5f1;
   padding:1rem 20px;
   width: 100%;
   -webkit-flex-grow: 1;

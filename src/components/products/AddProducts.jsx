@@ -32,16 +32,16 @@ const AddProducts = () => {
     e.preventDefault();
 
     // Validate inputs
-    if (!productDetails.company || !productDetails.name || !productDetails.regularPrice) {  
+    if (!productDetails.company || !productDetails.name || !productDetails.regularPrice) {
       alert('Please fill in all required fields.');
       return;
     }
 
-   // Use entryDate instead of timestamp
-   const productData = {
-    ...productDetails,
-    entryDate: productDetails.entryDate || new Date().toLocaleDateString(),  // Default to current date if not provided
-  };
+    // Use entryDate instead of timestamp
+    const productData = {
+      ...productDetails,
+      entryDate: productDetails.entryDate || new Date().toLocaleDateString(),  // Default to current date if not provided
+    };
 
     storeMobileProduct(productData);
     alert('Product added successfully!');
@@ -49,7 +49,7 @@ const AddProducts = () => {
     // Reset form fields
     setProductDetails({
       company: '',
-      name: '',  
+      name: '',
       sellerName: '',
       sellerMobile: '',
       imei: '',
@@ -73,7 +73,7 @@ const AddProducts = () => {
                 <div className="card-body">
                   <div className="row align-items-center">
                     <div className="col-md-6">
-                      <h4 className="card-title mb-5 text-uppercase">Add New Product</h4>
+                      <h4 className="card-title mb-4">Add New Product</h4>
                     </div>
                   </div>
 
@@ -147,24 +147,26 @@ const AddProducts = () => {
                           />
                         </div>
                       </div>
-  {/* Seller ID Proof Dropdown */}
+                      {/* Sellers ID proof  */}
                       <div className="col-md-4">
                         <div className="form-group">
                           <label>Seller's ID Proof</label>
-                          <select
-                            className="form-control"
+                          <input
+                            list="idProofs"
                             name="sellerIdProof"
+                            className="form-control"
                             value={productDetails.sellerIdProof}
                             onChange={handleInputChange}
-                          >
-                            <option value="">Select ID Proof</option>
-                            <option value="Aadhar Card">Aadhar Card</option>
-                            <option value="Voter ID">Voter ID</option>
-                            <option value="Passport">Passport</option>
-                            <option value="Driver's License">Driver's License</option>
-                          </select>
+                          />
+                          <datalist id="idProofs">
+                            <option value="Aadhar Card" />
+                            <option value="Voter ID" />
+                            <option value="Passport" />
+                            <option value="Driver's License" />
+                          </datalist>
                         </div>
                       </div>
+
                       <div className="col-md-4">
                         <div className="form-group">
                           <label>IMEI No <span className="text-danger">*</span></label>
@@ -288,7 +290,7 @@ const AddProducts = () => {
                         </div>
                       </div>
 
-                    
+
                     </div>
 
                     <button type="submit" className="btn btn-primary mr-2">
@@ -300,7 +302,7 @@ const AddProducts = () => {
                       onClick={() =>
                         setProductDetails({
                           company: '',
-                          name: '',  
+                          name: '',
                           sellerName: '',
                           sellerMobile: '',
                           imei: '',
@@ -310,7 +312,7 @@ const AddProducts = () => {
                           bill: 'yes',
                           box: 'yes',
                           sellerIdProof: '',
-                           entryDate: '',
+                          entryDate: '',
                         })
                       }
                     >

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import "./AllProducts.css";
 import Footer from "../footer/Footer";
-import { getDatabase, ref, onValue, remove } from "firebase/database";
+import { getDatabase, ref, onValue, remove, update } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import AllProductsFilter from "./AllProductsFilter";
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'; // Font Awesome icons
+import Loader from "../loader/Loader";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -21,22 +23,48 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-const formatDate = (timestamp) => {
-  const date = new Date(timestamp);  // This will work for "YYYY-MM-DD" format as well
-  const day = String(date.getDate()).padStart(2, "0"); // Ensure day is always two digits
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Ensure month is always two digits (getMonth() starts at 0)
-  const year = date.getFullYear();
-
-  return `${day}-${month}-${year}`;
-};
-
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  console.log("PRODUCTS API :", products);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+
+
+  const handleSaveEdit = () => {
+    if (!selectedProduct || !selectedProduct.id) return;
+  
+    const database = getDatabase();
+    const productRef = ref(database, `mobileProducts/${selectedProduct.id}`);
+  
+    const { id, ...productData } = selectedProduct;
+  
+    update(productRef, productData)
+      .then(() => {
+        console.log("Product updated successfully!");
+        window.$('#editProductModal').modal('hide');
+        window.alert("✅ Product updated successfully!");
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error);
+        window.alert("❌ Failed to update product.");
+      });
+  };
+  
+
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);  // This will work for "YYYY-MM-DD" format as well
+    const day = String(date.getDate()).padStart(2, "0"); // Ensure day is always two digits
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Ensure month is always two digits (getMonth() starts at 0)
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  };
+
+  const [filteredProducts, setFilteredProducts] = useState([]);
   useEffect(() => {
     setLoading(true);
     const productsRef = ref(database, "mobileProducts");
@@ -59,29 +87,29 @@ const AllProducts = () => {
 
   const handleFilter = (filterCriteria) => {
     const { minPrice, maxPrice, search, startDate, endDate } = filterCriteria;
-  
+
     setLoading(true);
-  
+
     const filtered = products.filter((product) => {
       const matchesSearch = search
         ? product.name?.toLowerCase().includes(search.toLowerCase()) ||
-          product.company?.toLowerCase().includes(search.toLowerCase()) ||
-          product.salePrice?.toString().includes(search) ||
-          product.regularPrice?.toString().includes(search) ||
-          (product.imei && product.imei.toLowerCase().includes(search.toLowerCase()))  // Check for IMEI here
+        product.company?.toLowerCase().includes(search.toLowerCase()) ||
+        product.salePrice?.toString().includes(search) ||
+        product.regularPrice?.toString().includes(search) ||
+        (product.imei && product.imei.toLowerCase().includes(search.toLowerCase()))  // Check for IMEI here
         : true;
-  
+
       const matchesMinPrice = minPrice ? product.salePrice >= minPrice : true;
       const matchesMaxPrice = maxPrice ? product.salePrice <= maxPrice : true;
-  
+
       const matchesStartDate = startDate
         ? new Date(product.timestamp) >= new Date(startDate)
         : true;
-  
+
       const matchesEndDate = endDate
         ? new Date(product.timestamp) <= new Date(endDate)
         : true;
-  
+
       return (
         matchesSearch &&
         matchesMinPrice &&
@@ -90,11 +118,29 @@ const AllProducts = () => {
         matchesEndDate
       );
     });
-  
+
     setFilteredProducts(filtered);
     setLoading(false);
   };
-  
+
+
+  // Sort latest first (assuming higher id = newer product)
+  const sortedProducts = [...filteredProducts].sort((a, b) => b.id - a.id);
+
+  // Pagination logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+
+
+  console.log("View Current Products :", currentProducts);
+
+  const handleEdit = (product) => {
+    setSelectedProduct(product); // Assuming you already have this state
+    window.$('#editProductModal').modal('show'); // jQuery to open Bootstrap modal
+  };
+
 
   const handleDelete = (productId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this product?");
@@ -111,80 +157,10 @@ const AllProducts = () => {
     }
   };
 
-  const exportAsPDF = () => {
-    const doc = new jsPDF();
 
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(255, 49, 49);
-    doc.text("i", 14, 20);
-    doc.setTextColor(0, 74, 173);
-    const iWidth = doc.getTextWidth("i");
-    doc.text("Connect", 14 + iWidth, 20);
-
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(169, 169, 169);
-    doc.text("Your trusted source for iPhone", 14, 30);
-
-    doc.text("BK Kakoty Road, Near Ulubari Bridge", 14, 45);
-    doc.text("Guwahati, Assam", 14, 50);
-    doc.text("PIN - 781007", 14, 55);
-
-    let yPosition = 65;
-
-    const columns = [
-      { title: "#", dataKey: "index" },
-      { title: "Product Name", dataKey: "name" },
-      { title: "Company", dataKey: "company" },
-      { title: "Regular Price", dataKey: "regularPrice" },
-      { title: "Sale Price", dataKey: "salePrice" },
-      { title: "Entry Date", dataKey: "entryDate" },
-      { title: "Sale Status", dataKey: "status" },
-      { title: "Bill", dataKey: "bill" },
-      { title: "Box", dataKey: "box" },
-      { title: "Seller ID Proof", dataKey: "sellerIdProof" },
-      { title: "IMEI No.", dataKey: "imei" },  // Added IMEI column
-    ];
-
-    const rows = filteredProducts.map((product, index) => ({
-      index: index + 1,
-      name: product.name,
-      company: product.company,
-      regularPrice: `$${product.regularPrice}`,
-      salePrice: `$${product.salePrice}`,
-      entryDate: formatDate(product.timestamp),
-      status: product.status,
-      bill: product.bill || "No documents",
-      box: product.box || "No documents",
-      sellerIdProof: product.sellerIdProof || "No documents",
-      imei: product.imei || "No IMEI",  // Handle missing IMEI
-    }));
-
-    doc.setFont("helvetica", "normal");
-    doc.autoTable(columns, rows, {
-      startY: yPosition,
-      styles: {
-        fontSize: 10,
-        cellPadding: 5,
-        halign: "center",
-        valign: "middle",
-        lineColor: [221, 221, 221],
-        lineWidth: 0.5,
-        textColor: [64, 60, 69],
-      },
-      headStyles: {
-        fillColor: [0, 74, 173],
-        textColor: [255, 255, 255],
-        fontStyle: "bold",
-      },
-      bodyStyles: {
-        fillColor: [255, 255, 250],
-      },
-      theme: "grid",
-    });
-
-    doc.save("products.pdf");
+  const handleView = (product) => {
+    setSelectedProduct(product);
+    window.$("#productModal").modal("show");
   };
 
   return (
@@ -195,84 +171,359 @@ const AllProducts = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-5 text-uppercase">All Products</h4>
+                  <h4 className="card-title mb-3">All Products</h4>
 
                   <AllProductsFilter onFilter={handleFilter} />
 
                   {loading ? (
-                    <div className="loader">Loading...</div>
+                    <Loader />
                   ) : (
-                    <div className="table-responsive pt-3">
+                    <div className="table-responsive pt-2">
                       <table className="table table-bordered">
-                        <thead>
+                        <thead className="bg-secondary text-dark">
                           <tr>
                             <th>#</th>
                             <th>Product Name</th>
-                            <th>IMEI No.</th> {/* New column for IMEI */}
+                            <th>IMEI No.</th>
                             <th>Regular Price</th>
-                            <th>Entry Date</th>
-                            <th>Bill</th>
-                            <th>Box</th>
-                            <th>Seller Name</th>
-                            <th>Seller ID Proof</th>
-                            <th>Action</th>
+                            <th className="text-center">Action</th>
                           </tr>
                         </thead>
-                        <tbody>
-  {filteredProducts.length > 0 ? (
-    filteredProducts.map((product, index) => (
-      <tr key={product.id}>
-        <td>{index + 1}</td>
-        <td>{product.name}</td>
-        <td className="font-weight-bold text-primary">{product.imei || "No IMEI"}</td> {/* Display IMEI or "No IMEI" */}
-        <td>₹{product.regularPrice}</td>
-        <td>{product.entryDate ? formatDate(product.entryDate) : "Not available"}</td> {/* Entry Date */}
-        <td className="text-capitalize">{product.bill || "No"}</td>
-        <td className="text-capitalize">{product.box || "No"}</td>
-        <td>
-    <span class="badge badge-primary">
-        { product.sellerName || "No Name" }
-    </span> 
-    <br /><br />
-    <span class="badge badge-secondary">
-        { product.sellerMobile || "No Phone Number" }
-    </span>
-</td>
 
-        <td>{product.sellerIdProof || "No documents"}</td>
-        <td>
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={() => handleDelete(product.id)}
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="11" style={{ textAlign: "center" }}>
-        No products found.
-      </td>
-    </tr>
-  )}
-</tbody>
+                        <tbody>
+                          {filteredProducts.length > 0 ? (
+                            // Directly reverse the array to display latest first
+                            [...filteredProducts] // Create a shallow copy to avoid mutating the original array
+                              .reverse() // Reverse the order
+                              .slice(indexOfFirstProduct, indexOfLastProduct) // Apply pagination to the reversed data
+                              .map((product, index) => (
+                                <tr key={product.id}>
+                                  <td>{indexOfFirstProduct + index + 1}</td>
+                                  <td><p style={{ textTransform: "capitalize" }}>{product.name}</p></td>
+                                  <td className="font-weight-bold text-primary">{product.imei || "No IMEI"}</td>
+                                  <td>₹{Number(product.regularPrice).toLocaleString('en-IN')}</td>
+                                  <td>
+                                    <button type="button" className="btn btn-info" onClick={() => handleView(product)}>
+                                      <FaEye /> View
+                                    </button>
+                                    <button type="button" className="btn btn-primary mx-2" onClick={() => handleEdit(product)}>
+                                      <FaEdit /> Edit
+                                    </button>
+                                    <button type="button" className="btn btn-danger" onClick={() => handleDelete(product.id)}>
+                                      <FaTrash /> Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                          ) : (
+                            <tr>
+                              <td colSpan="11" style={{ textAlign: "center" }}>No products found.</td>
+                            </tr>
+                          )}
+
+
+
+
+                        </tbody>
 
                       </table>
                     </div>
                   )}
 
-                  <button
-                    onClick={exportAsPDF}
-                    type="button"
-                    className="btn btn-info btn-icon-text mt-3"
-                  >
-                    Export as PDF
-                    <i className="ti-printer btn-icon-append"></i>
-                  </button>
+                  {/* Pagination Logic */}
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <button
+                      className="btn btn-outline-primary"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                      Previous
+                    </button>
+
+                    <strong>Page {currentPage} of {totalPages}</strong>
+
+                    <button
+                      className="btn btn-outline-primary"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                      Next
+                    </button>
+                  </div>
+
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Bootstrap Modal */}
+        <div
+          className="modal fade"
+          id="productModal"
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="productModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-centered" role="document">
+            <div className="modal-content" style={{ borderRadius: '10px', border: 'none' }}>
+              <div
+                className="modal-header"
+                style={{
+                  backgroundColor: 'none',
+                  borderBottom: '1px solid rgb(230, 224, 222)',
+                  borderTopLeftRadius: '10px',
+                  borderTopRightRadius: '10px',
+                  padding: '1rem 1.5rem',
+                }}
+              >
+                <h5
+                  className="modal-title"
+                  id="productModalLabel"
+                  style={{
+                    fontWeight: '600',
+                    fontSize: '1.05rem',
+                    color: '#343a40',
+                  }}
+                >
+                  Product Details
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div className="modal-body" style={{ padding: '1rem 1.5rem', fontSize: '0.95rem', color: '#495057' }}>
+                {selectedProduct ? (
+                  <div className="container-fluid">
+                    <div className="row">
+                      {/* Left Column */}
+                      <div className="col-md-6 mb-3">
+                        <p>
+                          <strong style={{ color: '#6c757d', textTransform: 'capitalize', letterSpacing: '1px' }}>Product Name:</strong> <span className="badge badge-warning text-capitalize">{selectedProduct.name}</span>
+                        </p>
+
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Entry Date:</strong>{' '}
+                          <span className="badge badge-warning">{selectedProduct.entryDate ? formatDate(selectedProduct.entryDate) : "Not available"}</span>
+                        </p>
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Regular Price:</strong>{' '}
+                          <span className="badge badge-primary text-white">
+                            ₹{Number(selectedProduct.regularPrice).toLocaleString('en-IN')}
+                          </span>
+                        </p>
+
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>IMEI No:</strong>{' '}
+                          <strong><span className="badge badge-success text-white" style={{ color: '#004085', letterSpacing: '2px' }}>{selectedProduct.imei}</span></strong>
+                        </p>
+
+
+
+                      </div>
+
+                      {/* Right Column */}
+                      <div className="col-md-6 mb-1">
+
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Box Available:</strong>{' '}
+                          <span className="badge badge-warning">
+                            {selectedProduct.box ? 'Yes' : 'No'}
+                          </span>
+                        </p>
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Bill Available:</strong>{' '}
+                          <span className="badge badge-success text-white">
+                            {selectedProduct.bill ? 'Yes' : 'No'}
+                          </span>
+                        </p>
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Seller Name:</strong>{' '}
+                          <span className="badge badge-primary text-white text-capitalize">
+                            {selectedProduct.sellerName || 'No Name'}
+                          </span>
+                        </p>
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Phone No:</strong>{' '}
+                          <span className="badge badge-warning">
+                            {selectedProduct.sellerMobile || 'No Phone Number'}
+                          </span>
+                        </p>
+                        <p>
+                          <strong style={{ color: '#6c757d' }}>Documents:</strong>{' '}
+                          <span className="badge badge-warning text-capitalize">{selectedProduct.sellerIdProof || 'No documents'}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p>Loading...</p>
+                )}
+              </div>
+
+              <div
+                className="modal-footer"
+                style={{
+                  borderTop: '1px solid #dee2e6',
+                  backgroundColor: '#f8f9fa',
+                  padding: '1rem 1.5rem',
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+        </div>
+
+        {/* Edit Modal */}
+        <div
+          className="modal fade"
+          id="editProductModal"
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="editProductModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-md" role="document">
+            <div
+              className="modal-content"
+              style={{
+                borderRadius: '10px',
+                border: 'none',
+              }}
+            >
+              <div
+                className="modal-header"
+                style={{
+                  borderBottom: '1px solid #dee2e6',
+                  padding: '1rem 1.5rem',
+                  borderTopLeftRadius: '10px',
+                  borderTopRightRadius: '10px',
+                }}
+              >
+                <h5 className="modal-title" id="editProductModalLabel">
+                  Edit Product
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <form className="forms-sample">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label>Product Name</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={selectedProduct?.name || ''}
+                          onChange={(e) =>
+                            setSelectedProduct({ ...selectedProduct, name: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label>Phone No</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={selectedProduct?.sellerMobile || ''}
+                          onChange={(e) =>
+                            setSelectedProduct({ ...selectedProduct, sellerMobile: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label>Regular Price</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={selectedProduct?.regularPrice || ''}
+                          onChange={(e) =>
+                            setSelectedProduct({ ...selectedProduct, regularPrice: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 mb-2">
+                      <div className="form-group">
+                        <label>Seller Name</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={selectedProduct?.sellerName || ''}
+                          onChange={(e) =>
+                            setSelectedProduct({ ...selectedProduct, sellerName: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-12 mb-3">
+                      <div className="form-group">
+                        <label>Change IMEI No</label>
+
+
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={selectedProduct?.imei || ''}
+                          onChange={(e) =>
+                            setSelectedProduct({ ...selectedProduct, imei: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+
+              <div className="modal-footer" style={{ padding: '1rem 1.5rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSaveEdit}
+                >
+                  Save Changes
+                </button>
               </div>
             </div>
           </div>

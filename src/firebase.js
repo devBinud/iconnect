@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, push } from "firebase/database";
+import { getDatabase, ref, set, push, update } from "firebase/database";
 
 // Your Firebase project configuration
 const firebaseConfig = {
@@ -18,12 +18,6 @@ const database = getDatabase(app);
 
 /**
  * Function to store new mobile product data in Firebase
- * @param {Object} productData - The mobile product data to store
- * @param {string} productData.company - Mobile company (e.g., Samsung, iPhone)
- * @param {string} productData.name - Mobile product name
- * @param {number} productData.regularPrice - Regular price of the mobile
- * @param {number} productData.discount - Discount percentage
- * @param {number} productData.salePrice - Final sale price after discount
  */
 const storeMobileProduct = (productData) => {
   const productsRef = ref(database, 'mobileProducts');
@@ -37,5 +31,21 @@ const storeMobileProduct = (productData) => {
     });
 };
 
-// Export the function as a default export
+/**
+ * ✅ Function to update existing mobile product data
+ * @param {string} productId - The ID of the product to update
+ * @param {Object} updatedData - The updated fields
+ */
+export const updateMobileProduct = (productId, updatedData) => {
+  const productRef = ref(database, `mobileProducts/${productId}`);
+  return update(productRef, updatedData)
+    .then(() => {
+      console.log("Mobile product updated successfully!");
+    })
+    .catch((error) => {
+      console.error("Error updating product:", error);
+    });
+};
+
+// ✅ Default export
 export default storeMobileProduct;
