@@ -35,12 +35,12 @@ const AllProducts = () => {
 
   const handleSaveEdit = () => {
     if (!selectedProduct || !selectedProduct.id) return;
-  
+
     const database = getDatabase();
     const productRef = ref(database, `mobileProducts/${selectedProduct.id}`);
-  
+
     const { id, ...productData } = selectedProduct;
-  
+
     update(productRef, productData)
       .then(() => {
         console.log("Product updated successfully!");
@@ -52,7 +52,7 @@ const AllProducts = () => {
         window.alert("❌ Failed to update product.");
       });
   };
-  
+
 
 
   const formatDate = (timestamp) => {
@@ -171,7 +171,7 @@ const AllProducts = () => {
             <div className="col-lg-12 grid-margin stretch-card">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title mb-3">All Products</h4>
+                  <h4 className="card-title mb-3">All Products <span className="badge badge-warning">Listing of All Products</span></h4>
 
                   <AllProductsFilter onFilter={handleFilter} />
 
@@ -237,7 +237,7 @@ const AllProducts = () => {
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(currentPage - 1)}
                     >
-                      Previous
+                      <i className="fas fa-arrow-left mr-2"></i> Previous
                     </button>
 
                     <strong>Page {currentPage} of {totalPages}</strong>
@@ -247,9 +247,10 @@ const AllProducts = () => {
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(currentPage + 1)}
                     >
-                      Next
+                      Next <i className="fas fa-arrow-right ml-2"></i>
                     </button>
                   </div>
+
 
                 </div>
               </div>

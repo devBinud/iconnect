@@ -73,7 +73,7 @@ const AddProducts = () => {
                 <div className="card-body">
                   <div className="row align-items-center">
                     <div className="col-md-6">
-                      <h4 className="card-title mb-4">Add New Product</h4>
+                    <h4 className="card-title mb-3">Add Products <span className="badge badge-warning">Add New products to the list</span></h4>
                     </div>
                   </div>
 

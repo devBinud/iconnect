@@ -153,7 +153,7 @@ const Main = () => {
                   </h3>
                   <h6 className="font-weight-normal mb-0">
                     Effortlessly manage and organize your{" "}
-                    <span className="text-primary">
+                    <span>
                       product inventory with ease, ensuring smooth operations and growth.
                     </span>
                   </h6>
@@ -170,7 +170,7 @@ const Main = () => {
                     <div className="card-body text-center">
                       <p className="mb-4">Total Phone Companies</p>
                       <p className="fs-30 mb-2">{totalPhoneCompanies}</p>
-                      <p>Last updated on today</p>
+                      <p className='badge badge-warning'>Last updated on today</p>
                     </div>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ const Main = () => {
                     <div className="card-body text-center">
                       <p className="mb-4">Total Products</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(totalProducts)}</p>
-                      <p>Last updated on today</p>
+                      <p className='badge badge-warning'>Last updated on today</p>
                     </div>
                   </div>
                 </div>
@@ -189,7 +189,7 @@ const Main = () => {
                     <div className="card-body text-center">
                       <p className="mb-4">Products Added </p>
                       <p className="fs-30 mb-2">{formatIndianNumber(productsAddedLast10Days)}</p>
-                      <p>Last 10 days data</p>
+                      <p className='badge badge-warning'>Last 10 days data</p>
                     </div>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ const Main = () => {
                     <div className="card-body text-center">
                       <p className="mb-4">Today's Orders</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(todaysOrders)}</p>
-                      <p>Last updated on today</p>
+                      <p className='badge badge-warning'>Last updated on today</p>
                     </div>
                   </div>
                 </div>
@@ -212,7 +212,7 @@ const Main = () => {
                     <div className="card-body text-center">
                       <p className="mb-4">Today's Sales</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(todaysSales)}</p>
-                      <p>Data as per recent calculation</p>
+                      <p className='badge badge-warning'>Data as per recent calculation</p>
                     </div>
                   </div>
                 </div>
@@ -222,7 +222,7 @@ const Main = () => {
                     <div className="card-body text-center">
                       <p className="mb-4">Products Added Today</p>
                       <p className="fs-30 mb-2">{formatIndianNumber(productsAddedToday)}</p>
-                      <p>Based on latest entry logs</p>
+                      <p className='badge badge-warning'>Based on latest entry logs</p>
                     </div>
                   </div>
                 </div>
